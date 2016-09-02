@@ -52,7 +52,7 @@ email.
 
 ```elixir
 defmodule MyApp.Mail do
-  import Bamboo.PostMarkHelper
+  import Bamboo.PostmarkHelper
 
   def some_email do
     email
