@@ -26,7 +26,8 @@ defmodule BambooPostmark.Mixfile do
      {:hackney, "~> 1.6"},
      {:poison, ">= 1.5.0"},
      {:plug, "~> 1.0"},
-     {:cowboy, "~> 1.0", only: [:test, :dev]}]
+     {:cowboy, "~> 1.0", only: [:test, :dev]},
+     {:ex_doc, "~> 0.13", only: :dev}]
   end
 
   defp package do
