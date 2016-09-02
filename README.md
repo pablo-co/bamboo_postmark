@@ -1,4 +1,6 @@
-# Bamboo.PostMarkAdapter
+# Bamboo.PostmarkAdapter
+
+[![CircleCI](https://circleci.com/gh/pablo-co/bamboo_postmark.svg?style=svg)](https://circleci.com/gh/pablo-co/bamboo_postmark)
 
 A [Postmark](https://postmarkapp.com/) Adapter for the [Bamboo](https://github.com/thoughtbot/bamboo) email library.
 
