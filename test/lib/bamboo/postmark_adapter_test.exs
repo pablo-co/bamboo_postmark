@@ -127,9 +127,9 @@ defmodule Bamboo.PostmarkAdapterTest do
     email |> PostmarkAdapter.deliver(@config)
 
     assert_receive {:fake_postmark, %{params: params}}
-    assert params["To"] == "To to@bar.com"
-    assert params["Bcc"] == "BCC bcc@bar.com"
-    assert params["Cc"] == "CC cc@bar.com"
+    assert params["To"] == "To <to@bar.com>"
+    assert params["Bcc"] == "BCC <bcc@bar.com>"
+    assert params["Cc"] == "CC <cc@bar.com>"
   end
 
   test "deliver/2 puts template name and empty content" do

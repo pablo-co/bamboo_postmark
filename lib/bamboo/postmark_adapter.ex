@@ -142,7 +142,7 @@ defmodule Bamboo.PostmarkAdapter do
   defp recipients_to_string(recipients, type) do
     recipients
     |> Enum.filter(fn(recipient) -> recipient[:type] == type end)
-    |> Enum.map_join(",", fn(rec) -> "#{rec[:name]} #{rec[:email]}" end)
+    |> Enum.map_join(",", fn(rec) -> "#{rec[:name]} <#{rec[:email]}>" end)
   end
 
   defp headers(api_key) do
