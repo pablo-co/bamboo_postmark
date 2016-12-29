@@ -77,7 +77,10 @@ defmodule Bamboo.PostmarkAdapter do
   end
 
   defp convert_to_postmark_params(email) do
-    email_params(email) |> maybe_put_template_params(email)
+    email
+    |> email_params()
+    |> maybe_put_template_params(email)
+    |> maybe_put_tag_params(email)
   end
 
   defp maybe_put_template_params(params, %{private:
@@ -89,6 +92,14 @@ defmodule Bamboo.PostmarkAdapter do
   end
 
   defp maybe_put_template_params(params, _) do
+    params
+  end
+
+  defp maybe_put_tag_params(params, %{private: %{tag: tag}}) do
+    Map.put(params, :"Tag", tag)
+  end
+
+  defp maybe_put_tag_params(params, _) do
     params
   end
 
@@ -119,7 +130,7 @@ defmodule Bamboo.PostmarkAdapter do
 
   defp email_headers(email) do
     Enum.map(email.headers,
-              fn {header, value} -> %{"Name": header, "Value": value } end)
+              fn {header, value} -> %{"Name": header, "Value": value} end)
   end
 
   defp recipients(email) do
