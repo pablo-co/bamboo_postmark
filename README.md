@@ -61,6 +61,7 @@ defmodule MyApp.Mail do
   end
 end
 ```
+
 #### Exception Warning
 
 Postmark templates include a subject, HTML body and text body and thus these shouldn't be included in the email as they will raise an API exception.
@@ -71,4 +72,21 @@ email
 |> subject("Will raise exception")
 |> html_body("<p>Will raise exception</p>")
 |> text_body("Will raise exception")
+```
+
+## Tagging emails
+
+The Postmark adapter provides a helper module for tagging emails.
+
+### Example
+
+```elixir
+defmodule MyApp.Mail do
+  import Bamboo.PostmarkHelper
+
+  def some_email do
+    email
+    |> tag("some-tag")
+  end
+end
 ```

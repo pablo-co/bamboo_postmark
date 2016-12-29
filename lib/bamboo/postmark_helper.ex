@@ -6,6 +6,18 @@ defmodule Bamboo.PostmarkHelper do
   alias Bamboo.Email
 
   @doc """
+  Set a single tag for an email that allows you to categorize outgoing emails
+  and get detailed statistics.
+
+  A convenience function for `put_private(email, :tag, "my-tag")`
+  ## Example
+      tag(email, "welcome-email")
+  """
+  def tag(email, tag) do
+    Email.put_private(email, :tag, tag)
+  end
+
+  @doc """
   Send emails using Postmark's template API.
 
   Setup Postmark to send emails using a template. Use this in conjuction with
