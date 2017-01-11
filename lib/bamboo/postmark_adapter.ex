@@ -79,6 +79,7 @@ defmodule Bamboo.PostmarkAdapter do
   defp convert_to_postmark_params(email) do
     email
     |> email_params()
+    |> maybe_put_reply_to_params(email)
     |> maybe_put_template_params(email)
     |> maybe_put_tag_params(email)
   end
@@ -100,6 +101,14 @@ defmodule Bamboo.PostmarkAdapter do
   end
 
   defp maybe_put_tag_params(params, _) do
+    params
+  end
+
+  defp maybe_put_reply_to_params(params, %{private: %{reply_to: address}}) do
+    Map.put(params, :"ReplyTo", address)
+  end
+
+  defp maybe_put_reply_to_params(params, _) do
     params
   end
 

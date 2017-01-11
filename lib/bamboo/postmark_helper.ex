@@ -18,6 +18,17 @@ defmodule Bamboo.PostmarkHelper do
   end
 
   @doc """
+  Set the Reply-To header for an email
+
+  A convenience function for `put_private(email, :reply_to, "foo@bar.com")`
+  ## Example
+      tag(email, "foo@bar.com")
+  """
+  def reply_to(email, address) do
+    Email.put_private(email, :reply_to, address)
+  end
+
+  @doc """
   Send emails using Postmark's template API.
 
   Setup Postmark to send emails using a template. Use this in conjuction with

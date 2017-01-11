@@ -165,6 +165,14 @@ defmodule Bamboo.PostmarkAdapterTest do
      assert_receive {:fake_postmark, %{params: %{"Tag" => "some_tag"}}}
   end
 
+  test "deliver/2 puts reply to param" do
+     email = new_email |> PostmarkHelper.reply_to("foo@bar.com")
+
+     email |> PostmarkAdapter.deliver(@config)
+
+     assert_receive {:fake_postmark, %{params: %{"ReplyTo" => "foo@bar.com"}}}
+  end
+
   test "raises if the response is not a success" do
     email = new_email(from: "INVALID_EMAIL")
 
