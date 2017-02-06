@@ -104,7 +104,7 @@ defmodule Bamboo.PostmarkAdapter do
     params
   end
 
-  defp maybe_put_tracking_params(params, %{private: 
+  defp maybe_put_tracking_params(params, %{private:
     %{track_opens: track_opens, track_links: track_links}}) do
     params
     |> Map.put(:"TrackOpens", track_opens)
