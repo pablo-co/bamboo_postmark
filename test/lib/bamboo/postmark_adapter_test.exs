@@ -18,9 +18,9 @@ defmodule Bamboo.PostmarkAdapterTest do
     plug :dispatch
 
     def start_server(parent) do
-      Agent.start_link(fn -> HashDict.new end, name: __MODULE__)
-      Agent.update(__MODULE__, &HashDict.put(&1, :parent, parent))
-      port = get_free_port
+      Agent.start_link(fn -> Map.new end, name: __MODULE__)
+      Agent.update(__MODULE__, &Map.put(&1, :parent, parent))
+      port = get_free_port()
       Application.put_env(:bamboo, :postmark_base_uri, "http://localhost:#{port}")
       Plug.Adapters.Cowboy.http __MODULE__, [], port: port, ref: __MODULE__
     end
@@ -55,14 +55,14 @@ defmodule Bamboo.PostmarkAdapterTest do
     end
 
     defp send_to_parent(conn) do
-      parent = Agent.get(__MODULE__, fn(set) -> HashDict.get(set, :parent) end)
+      parent = Agent.get(__MODULE__, fn(set) -> Map.get(set, :parent) end)
       send parent, {:fake_postmark, conn}
       conn
     end
   end
 
   setup do
-    FakePostmark.start_server(self)
+    FakePostmark.start_server(self())
 
     on_exit fn ->
       FakePostmark.shutdown
@@ -82,7 +82,7 @@ defmodule Bamboo.PostmarkAdapterTest do
   end
 
   test "deliver/2 sends the to the right url" do
-    new_email |> PostmarkAdapter.deliver(@config)
+    new_email() |> PostmarkAdapter.deliver(@config)
 
     assert_receive {:fake_postmark, %{request_path: request_path}}
 
@@ -90,7 +90,7 @@ defmodule Bamboo.PostmarkAdapterTest do
   end
 
   test "deliver/2 sends the to the right url for templates" do
-    new_email |> PostmarkHelper.template("hello") |> PostmarkAdapter.deliver(@config)
+    new_email() |> PostmarkHelper.template("hello") |> PostmarkAdapter.deliver(@config)
 
     assert_receive {:fake_postmark, %{request_path: request_path}}
 
@@ -133,7 +133,7 @@ defmodule Bamboo.PostmarkAdapterTest do
   end
 
   test "deliver/2 puts template name and empty content" do
-    email = new_email |> PostmarkHelper.template("hello")
+    email = new_email() |> PostmarkHelper.template("hello")
 
     email |> PostmarkAdapter.deliver(@config)
 
@@ -144,7 +144,7 @@ defmodule Bamboo.PostmarkAdapterTest do
   end
 
   test "deliver/2 puts template name and content" do
-    email = new_email |> PostmarkHelper.template("hello", [
+    email = new_email() |> PostmarkHelper.template("hello", [
       %{name: 'example name', content: 'example content'}
     ])
 
@@ -158,7 +158,7 @@ defmodule Bamboo.PostmarkAdapterTest do
   end
 
   test "deliver/2 puts tag param" do
-     email = new_email |> PostmarkHelper.tag("some_tag")
+     email = new_email() |> PostmarkHelper.tag("some_tag")
 
      email |> PostmarkAdapter.deliver(@config)
 
