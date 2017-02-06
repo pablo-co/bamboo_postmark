@@ -35,4 +35,17 @@ defmodule Bamboo.PostmarkHelper do
     |> Email.put_private(:template_id, template_id)
     |> Email.put_private(:template_model, template_model)
   end
+
+  @doc """
+  Enable Postmark email open tracking and link tracking.
+
+  ## Example
+    tracking(email, opens: true, links: "HtmlAndText")
+  """
+  def tracking(email, options) do
+    %{opens: opens, links: links} = Map.merge(%{opens: false, links: "None"}, options)
+    email
+    |> Email.put_private(:track_opens, opens)
+    |> Email.put_private(:track_links, links)
+  end
 end
