@@ -165,6 +165,14 @@ defmodule Bamboo.PostmarkAdapterTest do
      assert_receive {:fake_postmark, %{params: %{"Tag" => "some_tag"}}}
   end
 
+  test "deliver/2 puts tracking params" do
+     email = new_email() |> PostmarkHelper.tracking(%{opens: true, links: "HtmlOnly"})
+
+     email |> PostmarkAdapter.deliver(@config)
+
+     assert_receive {:fake_postmark, %{params: %{"TrackLinks" => "HtmlOnly", "TrackOpens" => true}}}
+  end
+
   test "raises if the response is not a success" do
     email = new_email(from: "INVALID_EMAIL")
 

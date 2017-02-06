@@ -81,6 +81,7 @@ defmodule Bamboo.PostmarkAdapter do
     |> email_params()
     |> maybe_put_template_params(email)
     |> maybe_put_tag_params(email)
+    |> maybe_put_tracking_params(email)
   end
 
   defp maybe_put_template_params(params, %{private:
@@ -103,6 +104,17 @@ defmodule Bamboo.PostmarkAdapter do
     params
   end
 
+  defp maybe_put_tracking_params(params, %{private:
+    %{track_opens: track_opens, track_links: track_links}}) do
+    params
+    |> Map.put(:"TrackOpens", track_opens)
+    |> Map.put(:"TrackLinks", track_links)
+  end
+
+  defp maybe_put_tracking_params(params, _) do
+    params
+  end
+
   defp email_params(email) do
     recipients = recipients(email)
     %{
@@ -113,8 +125,7 @@ defmodule Bamboo.PostmarkAdapter do
       "Subject": email.subject,
       "TextBody": email.text_body,
       "HtmlBody": email.html_body,
-      "Headers": email_headers(email),
-      "TrackOpens": true
+      "Headers": email_headers(email)
     }
   end
 
