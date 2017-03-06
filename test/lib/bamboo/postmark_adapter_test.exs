@@ -158,11 +158,22 @@ defmodule Bamboo.PostmarkAdapterTest do
   end
 
   test "deliver/2 puts tag param" do
-     email = new_email() |> PostmarkHelper.tag("some_tag")
+    email = new_email() |> PostmarkHelper.tag("some_tag")
+    email |> PostmarkAdapter.deliver(@config)
+    assert_receive {:fake_postmark, %{params: %{"Tag" => "some_tag"}}}
+  end
 
-     email |> PostmarkAdapter.deliver(@config)
+  test "deliver/2 puts tracking params" do
+    email = new_email()
+    |> PostmarkHelper.template("hello")
+    |> PostmarkHelper.put_param("TrackOpens", true)
+    |> PostmarkHelper.put_param("TrackLinks", "HtmlOnly")
 
-     assert_receive {:fake_postmark, %{params: %{"Tag" => "some_tag"}}}
+    email |> PostmarkAdapter.deliver(@config)
+
+    assert_receive {:fake_postmark, %{params: %{
+      "TrackLinks" => "HtmlOnly", "TrackOpens" => true, "TemplateId" => "hello"}
+    }}
   end
 
   test "raises if the response is not a success" do

@@ -116,7 +116,15 @@ defmodule Bamboo.PostmarkAdapter do
       "Headers": email_headers(email),
       "TrackOpens": true
     }
+    |> add_message_params(email)
   end
+
+  defp add_message_params(params, %{private: %{message_params: message_params}}) do
+    Enum.reduce(message_params, params, fn({key, value}, params) ->
+      Map.put(params, key, value)
+    end)
+  end
+  defp add_message_params(params, _), do: params
 
   defp email_from(email) do
     name = email.from |> elem(0)
