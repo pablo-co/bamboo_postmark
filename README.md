@@ -8,40 +8,40 @@ A [Postmark](https://postmarkapp.com/) Adapter for the [Bamboo](https://github.c
 
 The package can be installed as:
 
-  1. Add bamboo_postmark to your list of dependencies in `mix.exs`:
+1. Add bamboo_postmark to your list of dependencies in `mix.exs`:
 
-    ```elixir
-    def deps do
-      # Get from hex
-      [{:bamboo_postmark, "~> 0.2.0"}]
-      # Or use the latest from master
-      [{:bamboo_postmark, github: "pablo-co/bamboo_postmark"}]
-    end
-    ```
+```elixir
+def deps do
+  # Get from hex
+  [{:bamboo_postmark, "~> 0.2.0"}]
+  # Or use the latest from master
+  [{:bamboo_postmark, github: "pablo-co/bamboo_postmark"}]
+end
+```
 
-  2. Ensure bamboo is started before your application:
+2. Ensure bamboo is started before your application:
 
-    ```elixir
-    def application do
-      [applications: [:bamboo]]
-    end
-    ```
+```elixir
+def application do
+  [applications: [:bamboo]]
+end
+```
 
-  3. Add your Postmark API key to your config
+3. Add your Postmark API key to your config
 
-    > You can find this key as `Server API token` under the `Credentials` tab in each Postmark server.
+> You can find this key as `Server API token` under the `Credentials` tab in each Postmark server.
 
-    ```elixir
-    # In your configuration file:
-    #  * General configuration: config/config.exs
-    #  * Recommended production only: config/prod.exs
+```elixir
+# In your configuration file:
+#  * General configuration: config/config.exs
+#  * Recommended production only: config/prod.exs
 
-    config :my_app, MyApp.Mailer,
-          adapter: Bamboo.PostmarkAdapter
-          api_key: "my_api_key"
-    ```
+config :my_app, MyApp.Mailer,
+      adapter: Bamboo.PostmarkAdapter
+      api_key: "my_api_key"
+```
 
-  4. Follow Bamboo [Getting Started Guide](https://github.com/thoughtbot/bamboo#getting-started)
+4. Follow Bamboo [Getting Started Guide](https://github.com/thoughtbot/bamboo#getting-started)
 
 ## Using templates
 
@@ -89,4 +89,17 @@ defmodule MyApp.Mail do
     |> tag("some-tag")
   end
 end
+```
+
+## Sending extra parameters
+
+You can send other extra parameters to Postmark such as TrackOpens or
+TrackLinks by using `put_params`.
+
+> See Postmark's API for a complete list of parameters supported.
+
+```elixir
+email
+|> put_params("TrackLinks", "HtmlAndText")
+|> put_params("TrackOpens", true)
 ```
