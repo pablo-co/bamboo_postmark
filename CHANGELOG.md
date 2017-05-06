@@ -1,3 +1,16 @@
+## 0.3.0
+
+### New Additions
+
+* Support passing custom params to Postmark ([#9])
+
+### Fixes/Enhancements
+
+* Fix Elixir 1.4 warnings and deprecations ([#7])
+
+[#9]: https://github.com/pablo-co/bamboo_postmark/pull/9
+[#7]: https://github.com/pablo-co/bamboo_postmark/pull/7
+
 ## 0.2.0
 
 ### New Additions
