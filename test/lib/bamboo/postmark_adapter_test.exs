@@ -81,7 +81,16 @@ defmodule Bamboo.PostmarkAdapterTest do
     end
   end
 
-  test "deliver/2 sends the to the right url" do
+  test "deliver/2 passes the request_options to hackney" do
+    request_options = [recv_timeout: 0]
+    config = Map.put(@config, :request_options, request_options)
+
+    assert_raise Bamboo.PostmarkAdapter.ApiError, fn ->
+      PostmarkAdapter.deliver(new_email(), config)
+    end
+  end
+
+  test "deliver/2 makes the request to the right url" do
     new_email() |> PostmarkAdapter.deliver(@config)
 
     assert_receive {:fake_postmark, %{request_path: request_path}}

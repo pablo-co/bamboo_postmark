@@ -13,7 +13,7 @@ defmodule Bamboo.PostmarkAdapter do
     end
 
     def exception(%{params: params, response: response}) do
-      filtered_params = params |> Poison.decode!
+      filtered_params = Poison.decode!(params)
 
       message = """
       There was a problem sending the email through the Postmark API.
@@ -42,7 +42,7 @@ defmodule Bamboo.PostmarkAdapter do
     params = email |> convert_to_postmark_params() |> Poison.encode!
     uri = [base_uri(), "/", api_path(email)]
 
-    case :hackney.post(uri, headers(api_key), params, [:with_body]) do
+    case :hackney.post(uri, headers(api_key), params, options(config)) do
       {:ok, status, _headers, response} when status > 299 ->
         raise(ApiError, %{params: params, response: response})
       {:ok, status, headers, response} ->
@@ -105,18 +105,17 @@ defmodule Bamboo.PostmarkAdapter do
 
   defp email_params(email) do
     recipients = recipients(email)
-    %{
-      "From": email_from(email),
-      "To": recipients_to_string(recipients, "To"),
-      "Cc": recipients_to_string(recipients, "Cc"),
-      "Bcc": recipients_to_string(recipients, "Bcc"),
-      "Subject": email.subject,
-      "TextBody": email.text_body,
-      "HtmlBody": email.html_body,
-      "Headers": email_headers(email),
-      "TrackOpens": true
-    }
-    |> add_message_params(email)
+    add_message_params(%{
+                         "From": email_from(email),
+                         "To": recipients_to_string(recipients, "To"),
+                         "Cc": recipients_to_string(recipients, "Cc"),
+                         "Bcc": recipients_to_string(recipients, "Bcc"),
+                         "Subject": email.subject,
+                         "TextBody": email.text_body,
+                         "HtmlBody": email.html_body,
+                         "Headers": email_headers(email),
+                         "TrackOpens": true
+                       }, email)
   end
 
   defp add_message_params(params, %{private: %{message_params: message_params}}) do
@@ -127,8 +126,8 @@ defmodule Bamboo.PostmarkAdapter do
   defp add_message_params(params, _), do: params
 
   defp email_from(email) do
-    name = email.from |> elem(0)
-    email = email.from |> elem(1)
+    name = elem(email.from, 0)
+    email = elem(email.from, 1)
     if name do
       String.trim("#{name} <#{email}>")
     else
@@ -151,8 +150,8 @@ defmodule Bamboo.PostmarkAdapter do
   defp add_recipients(recipients, new_recipients, type: recipient_type) do
     Enum.reduce(new_recipients, recipients, fn(recipient, recipients) ->
       recipients ++ [%{
-        name: recipient |> elem(0),
-        email: recipient |> elem(1),
+        name: elem(recipient, 0),
+        email: elem(recipient, 1),
         type: recipient_type
       }]
     end)
@@ -175,5 +174,9 @@ defmodule Bamboo.PostmarkAdapter do
 
   defp base_uri do
     Application.get_env(:bamboo, :postmark_base_uri) || @default_base_uri
+  end
+
+  defp options(config) do
+    config[:request_options] || []
   end
 end

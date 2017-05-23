@@ -37,7 +37,7 @@ end
 #  * Recommended production only: config/prod.exs
 
 config :my_app, MyApp.Mailer,
-      adapter: Bamboo.PostmarkAdapter
+      adapter: Bamboo.PostmarkAdapter,
       api_key: "my_api_key"
 ```
 
@@ -102,4 +102,19 @@ TrackLinks by using `put_params`.
 email
 |> put_params("TrackLinks", "HtmlAndText")
 |> put_params("TrackOpens", true)
+```
+
+## Changing the underlying request configuration
+
+You can specify the options that are passed to the underlying HTTP client
+[hackney](https://github.com/benoitc/hackney) by using the `request_options` key
+in the configuration.
+
+### Example
+
+```elixir
+config :my_app, MyApp.Mailer,
+      adapter: Bamboo.PostmarkAdapter,
+      api_key: "my_api_key",
+      request_options: [recv_timeout: 10_000]
 ```

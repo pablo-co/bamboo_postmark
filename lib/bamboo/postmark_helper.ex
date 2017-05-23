@@ -40,6 +40,7 @@ defmodule Bamboo.PostmarkHelper do
   Put extra message parameters that are used by Postmark. You can set things like TrackOpens or TrackLinks.
 
   ## Example
+
     put_params(email, "TrackLinks", "HtmlAndText")
     put_params(email, "TrackOpens", true)
   """
@@ -49,5 +50,4 @@ defmodule Bamboo.PostmarkHelper do
   def put_param(email, key, value) do
     email |> Email.put_private(:message_params, %{}) |> put_param(key, value)
   end
-
 end
