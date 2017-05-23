@@ -1,3 +1,11 @@
+## 0.4.0
+
+### New Additions
+
+* Allow configuration of request options ([#12])
+
+[#12]: https://github.com/pablo-co/bamboo_postmark/pull/12
+
 ## 0.3.0
 
 ### New Additions

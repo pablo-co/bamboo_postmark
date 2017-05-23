@@ -13,7 +13,7 @@ The package can be installed as:
 ```elixir
 def deps do
   # Get from hex
-  [{:bamboo_postmark, "~> 0.3.0"}]
+  [{:bamboo_postmark, "~> 0.4"}]
   # Or use the latest from master
   [{:bamboo_postmark, github: "pablo-co/bamboo_postmark"}]
 end

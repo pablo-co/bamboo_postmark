@@ -26,7 +26,6 @@ defmodule Bamboo.PostmarkHelper do
   Postmarks's API docs for this can be found [here](https://www.mandrillapp.com/api/docs/messages.JSON.html#method=send-template).
 
   ## Example
-
     template(email, "9746128")
     template(email, "9746128", %{"name" => "Name", "content" => "John"})
   """
@@ -40,7 +39,6 @@ defmodule Bamboo.PostmarkHelper do
   Put extra message parameters that are used by Postmark. You can set things like TrackOpens or TrackLinks.
 
   ## Example
-
     put_params(email, "TrackLinks", "HtmlAndText")
     put_params(email, "TrackOpens", true)
   """
