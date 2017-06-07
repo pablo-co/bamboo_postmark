@@ -90,6 +90,12 @@ defmodule Bamboo.PostmarkAdapterTest do
     end
   end
 
+  test "deliver/2 returns the textual body of the request" do
+    response = PostmarkAdapter.deliver(new_email(), @config)
+
+    assert response.body == "SENT"
+  end
+
   test "deliver/2 makes the request to the right url" do
     new_email() |> PostmarkAdapter.deliver(@config)
 

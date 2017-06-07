@@ -177,6 +177,6 @@ defmodule Bamboo.PostmarkAdapter do
   end
 
   defp options(config) do
-    config[:request_options] || []
+    Keyword.merge(config[:request_options] || [], [with_body: true])
   end
 end
