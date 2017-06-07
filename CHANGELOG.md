@@ -1,3 +1,11 @@
+## 0.4.1
+
+### Fixes/Enhancements
+
+* Return body in response of PostmarkAdapter.deliver ([#14])
+
+[#14]: https://github.com/pablo-co/bamboo_postmark/pull/14
+
 ## 0.4.0
 
 ### New Additions
