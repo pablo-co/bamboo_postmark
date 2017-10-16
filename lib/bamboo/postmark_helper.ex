@@ -11,6 +11,7 @@ defmodule Bamboo.PostmarkHelper do
 
   A convenience function for `put_private(email, :tag, "my-tag")`
   ## Example
+
       tag(email, "welcome-email")
   """
   def tag(email, tag) do
@@ -26,6 +27,7 @@ defmodule Bamboo.PostmarkHelper do
   Postmarks's API docs for this can be found [here](https://www.mandrillapp.com/api/docs/messages.JSON.html#method=send-template).
 
   ## Example
+
     template(email, "9746128")
     template(email, "9746128", %{"name" => "Name", "content" => "John"})
   """
@@ -36,16 +38,27 @@ defmodule Bamboo.PostmarkHelper do
   end
 
   @doc """
-  Put extra message parameters that are used by Postmark. You can set things like TrackOpens or TrackLinks.
+  Put extra message parameters that are used by Postmark. You can set things
+  like TrackOpens, TrackLinks or Attachments.
 
   ## Example
-    put_params(email, "TrackLinks", "HtmlAndText")
-    put_params(email, "TrackOpens", true)
+
+    put_param(email, "TrackLinks", "HtmlAndText")
+    put_param(email, "TrackOpens", true)
+    put_param(email, "Attachments", [
+      %{
+        Name: "file.txt",
+        Content: "/some/file.txt" |> File.read!() |> Base.encode64(),
+        ContentType: "txt"
+      }
+    ])
   """
   def put_param(%Email{private: %{message_params: _}} = email, key, value) do
     put_in(email.private[:message_params][key], value)
   end
   def put_param(email, key, value) do
-    email |> Email.put_private(:message_params, %{}) |> put_param(key, value)
+    email
+    |> Email.put_private(:message_params, %{})
+    |> put_param(key, value)
   end
 end

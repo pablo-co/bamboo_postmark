@@ -73,7 +73,7 @@ defmodule Bamboo.PostmarkAdapterTest do
 
   test "raises if the api key is nil" do
     assert_raise ArgumentError, ~r/no API key set/, fn ->
-      new_email(from: "foo@bar.com") |> PostmarkAdapter.deliver(@config_with_bad_key)
+      PostmarkAdapter.deliver(new_email(from: "foo@bar.com"), @config_with_bad_key)
     end
 
     assert_raise ArgumentError, ~r/no API key set/, fn ->
@@ -97,7 +97,7 @@ defmodule Bamboo.PostmarkAdapterTest do
   end
 
   test "deliver/2 makes the request to the right url" do
-    new_email() |> PostmarkAdapter.deliver(@config)
+    PostmarkAdapter.deliver(new_email(), @config)
 
     assert_receive {:fake_postmark, %{request_path: request_path}}
 
@@ -113,23 +113,25 @@ defmodule Bamboo.PostmarkAdapterTest do
   end
 
   test "deliver/2 sends from, html and text body, subject, and headers" do
-    email = new_email(
-      from: {"From", "from@foo.com"},
-      subject: "My Subject",
-      text_body: "TEXT BODY",
-      html_body: "HTML BODY",
-    )
-    |> Email.put_header("Reply-To", "reply@foo.com")
+    email =
+      [
+        from: {"From", "from@foo.com"},
+        subject: "My Subject",
+        text_body: "TEXT BODY",
+        html_body: "HTML BODY",
+      ]
+      |> new_email()
+      |> Email.put_header("Reply-To", "reply@foo.com")
 
-    email |> PostmarkAdapter.deliver(@config)
+    PostmarkAdapter.deliver(email, @config)
 
     assert_receive {:fake_postmark, %{params: params}}
-    assert params["From"] == "#{email.from |> elem(0)} <#{email.from |> elem(1)}>"
+    assert params["From"] == "#{elem(email.from, 0)} <#{elem(email.from, 1)}>"
     assert params["Subject"] == email.subject
     assert params["TextBody"] == email.text_body
     assert params["HtmlBody"] == email.html_body
-    assert params["Headers"] == [%{"Name" => "Reply-To",
-      "Value" => "reply@foo.com"}]
+    assert params["Headers"] ==
+      [%{"Name" => "Reply-To", "Value" => "reply@foo.com"}]
   end
 
   test "deliver/2 correctly formats recipients" do
@@ -139,7 +141,7 @@ defmodule Bamboo.PostmarkAdapterTest do
       bcc: [{"BCC", "bcc@bar.com"}],
     )
 
-    email |> PostmarkAdapter.deliver(@config)
+    PostmarkAdapter.deliver(email, @config)
 
     assert_receive {:fake_postmark, %{params: params}}
     assert params["To"] == "To <to@bar.com>"
@@ -148,9 +150,9 @@ defmodule Bamboo.PostmarkAdapterTest do
   end
 
   test "deliver/2 puts template name and empty content" do
-    email = new_email() |> PostmarkHelper.template("hello")
+    email = PostmarkHelper.template(new_email(), "hello")
 
-    email |> PostmarkAdapter.deliver(@config)
+    PostmarkAdapter.deliver(email, @config)
 
     assert_receive {:fake_postmark, %{params: %{"TemplateId" => template_id,
        "TemplateModel" => template_model}}}
@@ -159,11 +161,11 @@ defmodule Bamboo.PostmarkAdapterTest do
   end
 
   test "deliver/2 puts template name and content" do
-    email = new_email() |> PostmarkHelper.template("hello", [
+    email = PostmarkHelper.template(new_email(), "hello", [
       %{name: 'example name', content: 'example content'}
     ])
 
-    email |> PostmarkAdapter.deliver(@config)
+    PostmarkAdapter.deliver(email, @config)
 
     assert_receive {:fake_postmark, %{params: %{"TemplateId" => template_id,
        "TemplateModel" => template_model}}}
@@ -173,18 +175,21 @@ defmodule Bamboo.PostmarkAdapterTest do
   end
 
   test "deliver/2 puts tag param" do
-    email = new_email() |> PostmarkHelper.tag("some_tag")
-    email |> PostmarkAdapter.deliver(@config)
+    email = PostmarkHelper.tag(new_email(), "some_tag")
+
+    PostmarkAdapter.deliver(email, @config)
+
     assert_receive {:fake_postmark, %{params: %{"Tag" => "some_tag"}}}
   end
 
   test "deliver/2 puts tracking params" do
-    email = new_email()
-    |> PostmarkHelper.template("hello")
-    |> PostmarkHelper.put_param("TrackOpens", true)
-    |> PostmarkHelper.put_param("TrackLinks", "HtmlOnly")
+    email =
+      new_email()
+      |> PostmarkHelper.template("hello")
+      |> PostmarkHelper.put_param("TrackOpens", true)
+      |> PostmarkHelper.put_param("TrackLinks", "HtmlOnly")
 
-    email |> PostmarkAdapter.deliver(@config)
+    PostmarkAdapter.deliver(email, @config)
 
     assert_receive {:fake_postmark, %{params: %{
       "TrackLinks" => "HtmlOnly", "TrackOpens" => true, "TemplateId" => "hello"}
@@ -195,12 +200,14 @@ defmodule Bamboo.PostmarkAdapterTest do
     email = new_email(from: "INVALID_EMAIL")
 
     assert_raise Bamboo.PostmarkAdapter.ApiError, fn ->
-      email |> PostmarkAdapter.deliver(@config)
+      PostmarkAdapter.deliver(email, @config)
     end
   end
 
   defp new_email(attrs \\ []) do
-    attrs = Keyword.merge([from: "foo@bar.com", to: []], attrs)
-    Email.new_email(attrs) |> Bamboo.Mailer.normalize_addresses
+    [from: "foo@bar.com", to: []]
+    |> Keyword.merge(attrs)
+    |> Email.new_email()
+    |> Bamboo.Mailer.normalize_addresses()
   end
 end

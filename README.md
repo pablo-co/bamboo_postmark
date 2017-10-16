@@ -93,15 +93,21 @@ end
 
 ## Sending extra parameters
 
-You can send other extra parameters to Postmark such as TrackOpens or
-TrackLinks by using `put_params`.
+You can send other extra parameters to Postmark with the `put_param` helper.
 
 > See Postmark's API for a complete list of parameters supported.
 
 ```elixir
 email
-|> put_params("TrackLinks", "HtmlAndText")
-|> put_params("TrackOpens", true)
+|> put_param("TrackLinks", "HtmlAndText")
+|> put_param("TrackOpens", true)
+|> put_param("Attachments", [
+  %{
+    Name: "file.txt",
+    Content: "/some/file.txt" |> File.read!() |> Base.encode64(),
+    ContentType: "txt"
+  }
+])
 ```
 
 ## Changing the underlying request configuration
