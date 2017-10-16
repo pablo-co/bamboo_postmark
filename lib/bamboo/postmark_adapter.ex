@@ -1,4 +1,18 @@
 defmodule Bamboo.PostmarkAdapter do
+  @moduledoc """
+  Sends email using Postmarks's API.
+
+  Use this adapter to send emails through Postmark's API. Requires that an API
+  key is set in the config.
+
+  ## Example config
+
+      # In config/config.exs, or config.prod.exs, etc.
+      config :my_app, MyApp.Mailer,
+        adapter: Bamboo.PostmarkAdapter,
+        api_key: "my_api_key"
+  """
+
   @behaviour Bamboo.Adapter
 
   @default_base_uri "https://api.postmarkapp.com"
@@ -29,8 +43,8 @@ defmodule Bamboo.PostmarkAdapter do
       Add the following configuration to your elixir_buildpack.config:
 
       config_vars_to_export=(
-      DATABASE_URL
-      POSTMARK_API_KEY
+        DATABASE_URL
+        POSTMARK_API_KEY
       )
       """
       %ApiError{message: message}
