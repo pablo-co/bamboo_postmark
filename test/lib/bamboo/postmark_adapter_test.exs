@@ -157,7 +157,7 @@ defmodule Bamboo.PostmarkAdapterTest do
     assert_receive {:fake_postmark, %{params: %{"TemplateId" => template_id,
        "TemplateModel" => template_model}}}
     assert template_id == "hello"
-    assert template_model == []
+    assert template_model == %{}
   end
 
   test "deliver/2 puts template name and content" do
