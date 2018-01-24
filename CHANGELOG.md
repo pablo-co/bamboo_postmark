@@ -1,3 +1,15 @@
+## 0.4.2
+
+### Fixes/Enhancements
+
+* Relax bamboo and hackney library requirements ([#18])
+* Fix bug when leaving default `template_model` value in `PostmarkHelper.template/3` ([#17])
+* Fix code style issues and compiler warnings ([#16])
+
+[#16]: https://github.com/pablo-co/bamboo_postmark/pull/16
+[#17]: https://github.com/pablo-co/bamboo_postmark/pull/17
+[#18]: https://github.com/pablo-co/bamboo_postmark/pull/18
+
 ## 0.4.1
 
 ### Fixes/Enhancements
