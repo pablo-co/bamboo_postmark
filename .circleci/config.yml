@@ -1,0 +1,12 @@
+version: 2
+jobs:
+  build:
+    working_directory: ~/bamboo_postmark
+    docker:
+      - image: elixir:1.5.3
+    steps:
+      - checkout
+      - run: mix local.hex --force
+      - run: mix local.rebar
+      - run: mix deps.get
+      - run: mix test
