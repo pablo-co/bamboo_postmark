@@ -28,8 +28,8 @@ defmodule Bamboo.PostmarkHelper do
 
   ## Example
 
-    template(email, "9746128")
-    template(email, "9746128", %{"name" => "Name", "content" => "John"})
+      template(email, "9746128")
+      template(email, "9746128", %{"name" => "Name", "content" => "John"})
   """
   def template(email, template_id, template_model \\ %{}) do
     email
@@ -43,15 +43,15 @@ defmodule Bamboo.PostmarkHelper do
 
   ## Example
 
-    put_param(email, "TrackLinks", "HtmlAndText")
-    put_param(email, "TrackOpens", true)
-    put_param(email, "Attachments", [
-      %{
-        Name: "file.txt",
-        Content: "/some/file.txt" |> File.read!() |> Base.encode64(),
-        ContentType: "txt"
-      }
-    ])
+      put_param(email, "TrackLinks", "HtmlAndText")
+      put_param(email, "TrackOpens", true)
+      put_param(email, "Attachments", [
+        %{
+          Name: "file.txt",
+          Content: "/some/file.txt" |> File.read!() |> Base.encode64(),
+          ContentType: "txt"
+        }
+      ])
   """
   def put_param(%Email{private: %{message_params: _}} = email, key, value) do
     put_in(email.private[:message_params][key], value)
