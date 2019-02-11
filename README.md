@@ -124,3 +124,7 @@ config :my_app, MyApp.Mailer,
       api_key: "my_api_key",
       request_options: [recv_timeout: 10_000]
 ```
+
+## JSON support
+
+Bamboo comes with JSON support out of the box, see [Bamboo JSON support](https://github.com/thoughtbot/bamboo#json-support).
