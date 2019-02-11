@@ -22,11 +22,11 @@ defmodule BambooPostmark.Mixfile do
   end
 
   defp deps do
-    [{:bamboo, ">= 0.7.0"},
+    [{:bamboo, ">= 1.2.0"},
      {:hackney, ">= 1.6.5"},
      {:poison, ">= 1.5.0"},
      {:plug, "~> 1.0"},
-     {:cowboy, "~> 1.0", only: [:test, :dev]},
+     {:plug_cowboy, "~> 2.0", only: [:test, :dev]},
      {:ex_doc, "~> 0.13", only: :dev}]
   end
 
