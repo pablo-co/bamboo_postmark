@@ -1,3 +1,11 @@
+## 0.5.0
+
+### New Additions
+
+* Make JSON library configurable ([#22])
+
+[#22]: https://github.com/pablo-co/bamboo_postmark/pull/22
+
 ## 0.4.2
 
 ### Fixes/Enhancements
