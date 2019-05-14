@@ -79,10 +79,16 @@ defmodule Bamboo.PostmarkAdapter do
   end
 
   defp get_key(config) do
-    if config[:api_key] in [nil, ""] do
+    api_key =
+      case Map.get(config, :api_key) do
+        {:system, var} -> System.get_env(var)
+        key -> key
+      end
+
+    if api_key in [nil, ""] do
       raise_api_key_error(config)
     else
-      config[:api_key]
+      api_key
     end
   end
 
