@@ -5,6 +5,7 @@ defmodule Bamboo.PostmarkAdapterTest do
   alias Bamboo.PostmarkHelper
 
   @config %{adapter: PostmarkAdapter, api_key: "123_abc"}
+  @config_with_env_var_key %{adapter: PostmarkAdapter, api_key: {:system, "POSTMARK_API_KEY"}}
   @config_with_bad_key %{adapter: PostmarkAdapter, api_key: nil}
 
   defmodule FakePostmark do
@@ -69,6 +70,26 @@ defmodule Bamboo.PostmarkAdapterTest do
     end
 
     :ok
+  end
+
+  test "can read the api key from an ENV var" do
+    System.put_env("POSTMARK_API_KEY", "123_abc")
+
+    config = PostmarkAdapter.handle_config(@config_with_env_var_key)
+
+    assert config[:api_key] == "123_abc"
+  end
+
+  test "raises if an invalid ENV var is used for the API key" do
+    System.delete_env("POSTMARK_API_KEY")
+
+    assert_raise ArgumentError, ~r/no API key set/, fn ->
+      PostmarkAdapter.deliver(new_email(from: "foo@bar.com"), @config_with_env_var_key)
+    end
+
+    assert_raise ArgumentError, ~r/no API key set/, fn ->
+      PostmarkAdapter.handle_config(@config_with_env_var_key)
+    end
   end
 
   test "raises if the api key is nil" do
