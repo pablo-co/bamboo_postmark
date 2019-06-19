@@ -10,7 +10,7 @@ defmodule Bamboo.PostmarkAdapter do
       # In config/config.exs, or config.prod.exs, etc.
       config :my_app, MyApp.Mailer,
         adapter: Bamboo.PostmarkAdapter,
-        api_key: "my_api_key"
+        api_key: "my_api_key" or {:system, "POSTMARK_API_KEY"}
   """
 
   @behaviour Bamboo.Adapter
@@ -67,15 +67,8 @@ defmodule Bamboo.PostmarkAdapter do
   end
 
   def handle_config(config) do
-    if config[:api_key] in [nil, ""] do
-      raise_api_key_error(config)
-    else
-      config
-    end
-  end
-
-  def json_library do
-    Bamboo.json_library()
+    # build the api key - will raise if there are errors
+    Map.merge(config, %{api_key: get_key(config)})
   end
 
   defp get_key(config) do
@@ -90,6 +83,10 @@ defmodule Bamboo.PostmarkAdapter do
     else
       api_key
     end
+  end
+
+  def json_library do
+    Bamboo.json_library()
   end
 
   defp raise_api_key_error(config) do
