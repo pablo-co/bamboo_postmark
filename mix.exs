@@ -5,7 +5,7 @@ defmodule BambooPostmark.Mixfile do
 
   def project do
     [app: :bamboo_postmark,
-     version: "0.5.0",
+     version: "0.6.0",
      elixir: "~> 1.2",
      source_url: @project_url,
      homepage_url: @project_url,
