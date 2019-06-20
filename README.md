@@ -39,6 +39,8 @@ end
 config :my_app, MyApp.Mailer,
       adapter: Bamboo.PostmarkAdapter,
       api_key: "my_api_key"
+      # Or if you want to use an ENV variable:
+      # api_key: {:system, "POSTMARK_API_KEY"}
 ```
 
 4. Follow Bamboo [Getting Started Guide](https://github.com/thoughtbot/bamboo#getting-started)
