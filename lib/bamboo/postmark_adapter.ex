@@ -71,6 +71,9 @@ defmodule Bamboo.PostmarkAdapter do
     Map.merge(config, %{api_key: get_key(config)})
   end
 
+  @doc false
+  def supports_attachments?, do: true
+
   defp get_key(config) do
     api_key =
       case Map.get(config, :api_key) do
@@ -102,6 +105,22 @@ defmodule Bamboo.PostmarkAdapter do
     |> email_params()
     |> maybe_put_template_params(email)
     |> maybe_put_tag_params(email)
+    |> maybe_put_attachments(email)
+  end
+
+  def maybe_put_attachments(params, %{attachments: []}) do
+    params
+  end
+
+  def maybe_put_attachments(params, %{attachments: attachments}) do
+    params
+    |> Map.put(:"Attachments", Enum.map(attachments, fn attachment ->
+      %{
+        Name: attachment.filename,
+        Content: attachment.data |> Base.encode64(),
+        ContentType: attachment.content_type
+      }
+    end))
   end
 
   defp maybe_put_template_params(params, %{private:
