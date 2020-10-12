@@ -118,7 +118,8 @@ defmodule Bamboo.PostmarkAdapter do
       %{
         Name: attachment.filename,
         Content: attachment.data |> Base.encode64(),
-        ContentType: attachment.content_type
+        ContentType: attachment.content_type,
+        ContentId: attachment.content_id
       }
     end))
   end
