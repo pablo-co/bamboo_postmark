@@ -1,3 +1,11 @@
+## 0.7.0
+
+### Fixes/Enhancements
+
+* Support inline attachments ([#34])
+
+[#34]: https://github.com/pablo-co/bamboo_postmark/pull/34
+
 ## 0.6.1
 
 ### Fixes/Enhancements
