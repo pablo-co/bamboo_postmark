@@ -1,3 +1,11 @@
+## 0.6.1
+
+### Fixes/Enhancements
+
+* Pass attachments as params to Postmark ([#31])
+
+[#31]: https://github.com/pablo-co/bamboo_postmark/pull/31
+
 ## 0.6.0
 
 ### New Additions
