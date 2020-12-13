@@ -183,7 +183,7 @@ defmodule Bamboo.PostmarkAdapterTest do
 
   test "deliver/2 puts template name and content" do
     email = PostmarkHelper.template(new_email(), "hello", [
-      %{name: 'example name', content: 'example content'}
+      %{name: "example name", content: "example content"}
     ])
 
     PostmarkAdapter.deliver(email, @config)
@@ -191,8 +191,8 @@ defmodule Bamboo.PostmarkAdapterTest do
     assert_receive {:fake_postmark, %{params: %{"TemplateId" => template_id,
        "TemplateModel" => template_model}}}
     assert template_id == "hello"
-    assert template_model == [%{"content" => 'example content',
-      "name" => 'example name'}]
+    assert template_model == [%{"content" => "example content",
+      "name" => "example name"}]
   end
 
   test "deliver/2 puts tag param" do

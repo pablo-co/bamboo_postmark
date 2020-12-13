@@ -6,7 +6,7 @@ defmodule BambooPostmark.Mixfile do
   def project do
     [app: :bamboo_postmark,
      version: "0.6.0",
-     elixir: "~> 1.2",
+     elixir: "~> 1.4",
      source_url: @project_url,
      homepage_url: @project_url,
      name: "Bamboo Postmark Adapter",
@@ -18,7 +18,7 @@ defmodule BambooPostmark.Mixfile do
   end
 
   def application do
-    [applications: [:logger, :hackney]]
+    [extra_applications: [:logger]]
   end
 
   defp deps do

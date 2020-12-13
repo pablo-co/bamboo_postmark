@@ -19,15 +19,7 @@ def deps do
 end
 ```
 
-2. Ensure bamboo is started before your application:
-
-```elixir
-def application do
-  [applications: [:bamboo]]
-end
-```
-
-3. Add your Postmark API key to your config
+2. Add your Postmark API key to your config
 
 > You can find this key as `Server API token` under the `Credentials` tab in each Postmark server.
 
@@ -43,7 +35,7 @@ config :my_app, MyApp.Mailer,
       # api_key: {:system, "POSTMARK_API_KEY"}
 ```
 
-4. Follow Bamboo [Getting Started Guide](https://github.com/thoughtbot/bamboo#getting-started)
+3. Follow Bamboo [Getting Started Guide](https://github.com/thoughtbot/bamboo#getting-started)
 
 ## Using templates
 
