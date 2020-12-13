@@ -236,6 +236,31 @@ defmodule Bamboo.PostmarkAdapterTest do
     }
   end
 
+  test "deliver/2 puts inline attachments" do
+    email = PostmarkHelper.template(new_email(), "hello", [
+      %{name: "example name", content: "example content <img src=\"my-attachment\" />"}
+    ])
+    |> Email.put_attachment(Path.join(__DIR__, "../../support/attachment.txt"), content_id: "my-attachment")
+
+    PostmarkAdapter.deliver(email, @config)
+
+    assert_receive {
+      :fake_postmark,
+      %{
+        params: %{
+          "Attachments" => [
+            %{
+              "Content" => "VGVzdCBBdHRhY2htZW50",
+              "ContentType" => "text/plain",
+              "Name" => "attachment.txt",
+              "ContentId" => "my-attachment"
+            }
+          ]
+        }
+      }
+    }
+  end
+
   test "raises if the response is not a success" do
     email = new_email(from: "INVALID_EMAIL")
 
