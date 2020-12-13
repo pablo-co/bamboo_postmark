@@ -3,7 +3,7 @@ jobs:
   build:
     working_directory: ~/bamboo_postmark
     docker:
-      - image: elixir:1.5.3
+      - image: elixir:1.6.6
     steps:
       - checkout
       - run: mix local.hex --force
