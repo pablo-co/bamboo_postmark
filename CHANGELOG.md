@@ -1,3 +1,9 @@
+## Unreleased
+
+### Changes
+* Change return of deliver/2 to work with Bamboo v2.0
+* Require Bamboo 2.0.0 or above
+
 ## 0.7.0
 
 ### Fixes/Enhancements
