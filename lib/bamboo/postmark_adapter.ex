@@ -19,37 +19,7 @@ defmodule Bamboo.PostmarkAdapter do
   @send_email_path "email"
   @send_email_template_path "email/withTemplate"
 
-  defmodule ApiError do
-    defexception [:message]
-
-    def exception(%{message: message}) do
-      %ApiError{message: message}
-    end
-
-    def exception(%{params: params, response: response}) do
-      filtered_params = Bamboo.PostmarkAdapter.json_library().decode!(params)
-
-      message = """
-      There was a problem sending the email through the Postmark API.
-      Here is the response:
-      #{inspect response, limit: :infinity}
-
-      Here are the params we sent:
-
-      #{inspect filtered_params, limit: :infinity}
-
-      If you are deploying to Heroku and using ENV variables to handle your API key,
-      you will need to explicitly export the variables so they are available at compile time.
-      Add the following configuration to your elixir_buildpack.config:
-
-      config_vars_to_export=(
-        DATABASE_URL
-        POSTMARK_API_KEY
-      )
-      """
-      %ApiError{message: message}
-    end
-  end
+  import Bamboo.ApiError, only: [build_api_error: 1]
 
   def deliver(email, config) do
     api_key = get_key(config)
@@ -58,11 +28,13 @@ defmodule Bamboo.PostmarkAdapter do
 
     case :hackney.post(uri, headers(api_key), params, options(config)) do
       {:ok, status, _headers, response} when status > 299 ->
-        raise(ApiError, %{params: params, response: response})
+        {:error, build_api_error(%{params: params, response: response})}
+
       {:ok, status, headers, response} ->
-        %{status_code: status, headers: headers, body: response}
+        {:ok, %{status_code: status, headers: headers, body: response}}
+
       {:error, reason} ->
-        raise(ApiError, %{message: inspect(reason)})
+        {:error, build_api_error(%{message: inspect(reason)})}
     end
   end
 
