@@ -106,13 +106,14 @@ defmodule Bamboo.PostmarkAdapterTest do
     request_options = [recv_timeout: 0]
     config = Map.put(@config, :request_options, request_options)
 
-    assert_raise Bamboo.PostmarkAdapter.ApiError, fn ->
-      PostmarkAdapter.deliver(new_email(), config)
-    end
+
+      {:error, %Bamboo.ApiError{message: message}} = PostmarkAdapter.deliver(new_email(), config)
+
+      assert message.message =~ "timeout"
   end
 
-  test "deliver/2 returns the textual body of the request" do
-    response = PostmarkAdapter.deliver(new_email(), @config)
+  test "deliver/2 returns {:ok, response}, where response contains the textual body of the request" do
+    {:ok, response} = PostmarkAdapter.deliver(new_email(), @config)
 
     assert response.body == "SENT"
   end
@@ -159,7 +160,7 @@ defmodule Bamboo.PostmarkAdapterTest do
     email = new_email(
       to: [{"To", "to@bar.com"}],
       cc: [{"CC", "cc@bar.com"}],
-      bcc: [{"BCC", "bcc@bar.com"}],
+      bcc: [{"BCC", "bcc@bar.com"}]
     )
 
     PostmarkAdapter.deliver(email, @config)
@@ -261,12 +262,13 @@ defmodule Bamboo.PostmarkAdapterTest do
     }
   end
 
-  test "raises if the response is not a success" do
+  test "returns an error if the response is not a success" do
     email = new_email(from: "INVALID_EMAIL")
 
-    assert_raise Bamboo.PostmarkAdapter.ApiError, fn ->
-      PostmarkAdapter.deliver(email, @config)
-    end
+    {:error, %Bamboo.ApiError{message: message}} = PostmarkAdapter.deliver(email, @config)
+
+    assert message.params =~ "INVALID_EMAIL"
+    assert message.response == "Error!!"
   end
 
   defp new_email(attrs \\ []) do
