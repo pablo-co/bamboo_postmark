@@ -1,4 +1,4 @@
-## Unreleased
+## 1.0.0
 
 ### Changes
 * Change return of deliver/2 to work with Bamboo v2.0
