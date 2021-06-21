@@ -5,12 +5,13 @@ defmodule Bamboo.PostmarkAdapter do
   Use this adapter to send emails through Postmark's API. Requires that an API
   key is set in the config.
 
-  ## Example config
+  ## Example
 
       # In config/config.exs, or config.prod.exs, etc.
       config :my_app, MyApp.Mailer,
         adapter: Bamboo.PostmarkAdapter,
         api_key: "my_api_key" or {:system, "POSTMARK_API_KEY"}
+
   """
 
   @behaviour Bamboo.Adapter
@@ -192,5 +193,4 @@ defmodule Bamboo.PostmarkAdapter do
   defp options(config) do
     Keyword.merge(config[:request_options] || [], [with_body: true])
   end
-
 end

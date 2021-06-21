@@ -1,6 +1,6 @@
 defmodule Bamboo.PostmarkHelper do
   @moduledoc """
-  Functions for using features specific to Postmark e.g. templates
+  Functions for using features specific to Postmark's templates.
   """
 
   alias Bamboo.Email
@@ -10,9 +10,11 @@ defmodule Bamboo.PostmarkHelper do
   and get detailed statistics.
 
   A convenience function for `put_private(email, :tag, "my-tag")`
-  ## Example
+
+  ## Examples
 
       tag(email, "welcome-email")
+
   """
   def tag(email, tag) do
     Email.put_private(email, :tag, tag)
@@ -26,10 +28,11 @@ defmodule Bamboo.PostmarkHelper do
   template id specified here must match the template id in Postmark.
   Postmarks's API docs for this can be found [here](https://postmarkapp.com/developer/api/templates-api#email-with-template).
 
-  ## Example
+  ## Examples
 
       template(email, "9746128")
       template(email, "9746128", %{"name" => "Name", "content" => "John"})
+
   """
   def template(email, template_id, template_model \\ %{}) do
     email
@@ -41,7 +44,7 @@ defmodule Bamboo.PostmarkHelper do
   Put extra message parameters that are used by Postmark. You can set things
   like TrackOpens, TrackLinks or Attachments.
 
-  ## Example
+  ## Examples
 
       put_param(email, "TrackLinks", "HtmlAndText")
       put_param(email, "TrackOpens", true)
@@ -52,6 +55,7 @@ defmodule Bamboo.PostmarkHelper do
           ContentType: "txt"
         }
       ])
+
   """
   def put_param(%Email{private: %{message_params: _}} = email, key, value) do
     put_in(email.private[:message_params][key], value)
