@@ -32,12 +32,21 @@ defmodule Bamboo.PostmarkHelper do
 
       template(email, "9746128")
       template(email, "9746128", %{"name" => "Name", "content" => "John"})
+      template(email, {:alias, "my-template-alias"}, %{"name" => "Name", "content" => "John"})
 
   """
   def template(email, template_id, template_model \\ %{}) do
     email
-    |> Email.put_private(:template_id, template_id)
     |> Email.put_private(:template_model, template_model)
+    |> put_private_template(template_id)
+  end
+
+  defp put_private_template(email, {:alias, template_alias}) do
+    Email.put_private(email, :template_alias, template_alias)
+  end
+
+  defp put_private_template(email, template_id) do
+    Email.put_private(email, :template_id, template_id)
   end
 
   @doc """
@@ -60,6 +69,7 @@ defmodule Bamboo.PostmarkHelper do
   def put_param(%Email{private: %{message_params: _}} = email, key, value) do
     put_in(email.private[:message_params][key], value)
   end
+
   def put_param(email, key, value) do
     email
     |> Email.put_private(:message_params, %{})
