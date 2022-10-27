@@ -142,11 +142,7 @@ defmodule Bamboo.PostmarkAdapter do
   defp email_from(email) do
     name = elem(email.from, 0)
     email = elem(email.from, 1)
-    if name do
-      String.trim("#{name} <#{email}>")
-    else
-      String.trim(email)
-    end
+    encode_name_and_email(name, email)
   end
 
   defp email_headers(email) do
@@ -174,7 +170,18 @@ defmodule Bamboo.PostmarkAdapter do
   defp recipients_to_string(recipients, type) do
     recipients
     |> Enum.filter(fn(recipient) -> recipient[:type] == type end)
-    |> Enum.map_join(",", fn(rec) -> "#{rec[:name]} <#{rec[:email]}>" end)
+    |> Enum.map_join(",", &encode_name_and_email(&1.name, &1.email))
+  end
+
+  defp encode_name_and_email(name, email) do
+    encoded =
+      if name do
+        "#{name} <#{email}>"
+      else
+        email
+      end
+
+    String.trim(encoded)
   end
 
   defp headers(api_key) do
