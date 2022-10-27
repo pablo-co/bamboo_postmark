@@ -148,7 +148,7 @@ defmodule Bamboo.PostmarkAdapterTest do
     PostmarkAdapter.deliver(email, @config)
 
     assert_receive {:fake_postmark, %{params: params}}
-    assert params["From"] == "#{elem(email.from, 0)} <#{elem(email.from, 1)}>"
+    assert params["From"] == ~s("#{elem(email.from, 0)}" <#{elem(email.from, 1)}>)
     assert params["Subject"] == email.subject
     assert params["TextBody"] == email.text_body
     assert params["HtmlBody"] == email.html_body
@@ -166,9 +166,18 @@ defmodule Bamboo.PostmarkAdapterTest do
     PostmarkAdapter.deliver(email, @config)
 
     assert_receive {:fake_postmark, %{params: params}}
-    assert params["To"] == "To <to@bar.com>"
-    assert params["Bcc"] == "BCC <bcc@bar.com>"
-    assert params["Cc"] == "CC <cc@bar.com>"
+    assert params["To"] == ~s("To" <to@bar.com>)
+    assert params["Bcc"] == ~s("BCC" <bcc@bar.com>)
+    assert params["Cc"] == ~s("CC" <cc@bar.com>)
+  end
+
+  test "deliver/2 escapes special characters in names" do
+    email = new_email(to: [{"João \"Fulano", "to@bar.com"}])
+
+    PostmarkAdapter.deliver(email, @config)
+
+    assert_receive {:fake_postmark, %{params: params}}
+    assert params["To"] == ~s("João \\"Fulano" <to@bar.com>)
   end
 
   test "deliver/2 puts template name and empty content" do
