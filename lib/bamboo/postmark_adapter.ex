@@ -176,7 +176,8 @@ defmodule Bamboo.PostmarkAdapter do
   defp encode_name_and_email(name, email) do
     encoded =
       if name do
-        "#{name} <#{email}>"
+        name = String.replace(name, ~s("), ~s(\\"))
+        ~s("#{name}" <#{email}>)
       else
         email
       end
