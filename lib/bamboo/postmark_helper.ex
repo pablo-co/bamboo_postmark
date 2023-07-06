@@ -34,7 +34,15 @@ defmodule Bamboo.PostmarkHelper do
       template(email, "9746128", %{"name" => "Name", "content" => "John"})
 
   """
-  def template(email, template_id, template_model \\ %{}) do
+  def template(email, template_id_or_alias, template_model \\ %{})
+
+  def template(email, {:alias, template_alias}, template_model) do
+    email
+    |> Email.put_private(:template_alias, template_alias)
+    |> Email.put_private(:template_model, template_model)
+  end
+
+  def template(email, template_id, template_model) do
     email
     |> Email.put_private(:template_id, template_id)
     |> Email.put_private(:template_model, template_model)

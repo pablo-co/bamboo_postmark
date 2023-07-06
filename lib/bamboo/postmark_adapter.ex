@@ -98,9 +98,14 @@ defmodule Bamboo.PostmarkAdapter do
   end
 
   defp maybe_put_template_params(params, %{private:
-    %{template_id: template_name, template_model: template_model}}) do
+    %{template_model: template_model} = private}) do
+    params =
+      case private do
+        %{template_id: template_id} -> Map.put(params, :"TemplateId", template_id)
+        %{template_alias: template_alias} -> Map.put(params, :"TemplateAlias", template_alias)
+      end
+
     params
-    |> Map.put(:"TemplateId", template_name)
     |> Map.put(:"TemplateModel", template_model)
     |> Map.put(:"InlineCss", true)
   end

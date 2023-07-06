@@ -171,7 +171,7 @@ defmodule Bamboo.PostmarkAdapterTest do
     assert params["Cc"] == "CC <cc@bar.com>"
   end
 
-  test "deliver/2 puts template name and empty content" do
+  test "deliver/2 puts template id and empty content" do
     email = PostmarkHelper.template(new_email(), "hello")
 
     PostmarkAdapter.deliver(email, @config)
@@ -182,7 +182,7 @@ defmodule Bamboo.PostmarkAdapterTest do
     assert template_model == %{}
   end
 
-  test "deliver/2 puts template name and content" do
+  test "deliver/2 puts template id and content" do
     email = PostmarkHelper.template(new_email(), "hello", [
       %{name: "example name", content: "example content"}
     ])
@@ -192,6 +192,31 @@ defmodule Bamboo.PostmarkAdapterTest do
     assert_receive {:fake_postmark, %{params: %{"TemplateId" => template_id,
        "TemplateModel" => template_model}}}
     assert template_id == "hello"
+    assert template_model == [%{"content" => "example content",
+      "name" => "example name"}]
+  end
+
+  test "deliver/2 puts template alias and empty content" do
+    email = PostmarkHelper.template(new_email(), {:alias, "hello_alias"})
+
+    PostmarkAdapter.deliver(email, @config)
+
+    assert_receive {:fake_postmark, %{params: %{"TemplateAlias" => template_alias,
+       "TemplateModel" => template_model}}}
+    assert template_alias == "hello_alias"
+    assert template_model == %{}
+  end
+
+  test "deliver/2 puts template alias and content" do
+    email = PostmarkHelper.template(new_email(), {:alias, "hello_alias"}, [
+      %{name: "example name", content: "example content"}
+    ])
+
+    PostmarkAdapter.deliver(email, @config)
+
+    assert_receive {:fake_postmark, %{params: %{"TemplateAlias" => template_alias,
+       "TemplateModel" => template_model}}}
+    assert template_alias == "hello_alias"
     assert template_model == [%{"content" => "example content",
       "name" => "example name"}]
   end
